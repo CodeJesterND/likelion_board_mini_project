@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Techit 게시판</title>
+    <link rel="stylesheet" th:href="@{/css/board/list.css}">
+</head>
+<body>
+<form>
+    <h1>Techit 게시판</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>작성자</th>
+            <th>제목</th>
+            <th>등록일</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${boards}">
+            <td th:text="${board.id}"></td>
+            <td th:text="${board.name}"></td>
+            <td>
+                <a th:href="@{/view(id=${board.id}, page=${currentPage})}" th:text="${board.title}"></a>
+            </td>
+            <td th:text="${#temporals.format(board.createdAt, 'yyyy/MM/dd')}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <div>
+        <ul>
+            <li th:each="i : ${#numbers.sequence(1, totalPages)}">
+                <a th:href="@{/list(page=${i})}" th:text="${i}" th:class="${i == currentPage ? 'active' : ''}"></a>
+            </li>
+        </ul>
+    </div>
+    <a th:href="@{/writeform}" class="write-link">글 쓰기</a>
+</form>
+</body>
+</html>

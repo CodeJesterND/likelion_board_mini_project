@@ -1,0 +1,12 @@
+spring:
+    application:
+        name: boardmvc
+
+    datasource:
+        url: jdbc:mysql://localhost/SampleData
+        username: root
+        password: 240311
+        driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+    port: 80

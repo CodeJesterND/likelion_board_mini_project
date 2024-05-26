@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 등록</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/board/create.css}">
+</head>
+<body>
+<div class="form-container">
+    <h2>게시글 등록</h2>
+    <form th:action="@{/write}" th:object="${board}" method="post">
+        <label for="name">이름:</label>
+        <input type="text" id="name" th:field="*{name}" required />
+
+        <label for="title">제목:</label>
+        <input type="text" id="title" th:field="*{title}" required />
+
+        <label for="content">본문:</label>
+        <textarea id="content" th:field="*{content}" required></textarea>
+
+        <label for="password">암호:</label>
+        <input type="password" id="password" th:field="*{password}" required />
+
+        <input type="submit" value="등록" />
+    </form>
+</div>
+</body>
+</html>

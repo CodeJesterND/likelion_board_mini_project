@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/board/update.css}">
+</head>
+<body>
+<div class="form-container">
+    <div class="form-wrapper">
+        <h2>게시글 수정</h2>
+        <form th:action="@{/update}" th:object="${board}" method="post">
+            <input type="hidden" name="page" th:value="${page}" />
+            <input type="hidden" th:field="*{createdAt}">
+            <input type="hidden" th:field="*{id}" />
+            <div class="form-group">
+                <label for="name">작성자:</label>
+                <input type="text" id="name" th:field="*{name}" required />
+            </div>
+
+            <div class="form-group">
+                <label for="title">제목:</label>
+                <input type="text" id="title" th:field="*{title}" required />
+            </div>
+
+            <div class="form-group">
+                <label for="content">본문:</label>
+                <textarea id="content" th:field="*{content}" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="password">암호:</label>
+                <input type="password" id="password" th:field="*{password}" required />
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="등록" />
+            </div>
+
+            <div th:if="${errorMessage == true}" class="error-message">
+                <p>암호가 일치하지 않습니다.</p>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
