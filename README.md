@@ -1,4 +1,4 @@
-## Spring Boot, Spring Data JDBC, Spring MVC를 이용한 게시판 만들기
+# Spring Boot, Spring Data JDBC, Spring MVC를 이용한 게시판 만들기
 
 ## 1. 프로젝트 요구 사항
 
