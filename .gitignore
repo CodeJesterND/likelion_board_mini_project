@@ -62,3 +62,6 @@ out/
 ### VS Code ###
 .vscode/
 >>>>>>> bb891d1 (Add initial version of the project)
+
+### Mac OS ###
+.DS_Store
