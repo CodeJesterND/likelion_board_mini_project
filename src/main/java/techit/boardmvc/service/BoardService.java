@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import techit.boardmvc.domain.Board;
 import techit.boardmvc.repository.BoardRepository;
+import static techit.boardmvc.util.BCryptPasswordSecurity.*;
 
 import java.util.List;
 import java.util.Optional;
@@ -48,5 +49,14 @@ public class BoardService {
     public boolean validatePassword(Long id, String password) {
         Optional<Board> optionalBoard = findBoardByID(id);
         return optionalBoard.map(board -> board.getPassword().equals(password)).orElse(false);
+    }
+
+    public String hashedBoardByPassword(String password) {
+        String hashedPassword =  hashingPassword(password);
+        return hashedPassword;
+    }
+
+    public boolean validatePassword(String notHashPassword, String hashedPassword) {
+        return verifyPassword(notHashPassword, hashedPassword);
     }
 }
