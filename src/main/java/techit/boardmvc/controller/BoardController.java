@@ -15,7 +15,7 @@ import techit.boardmvc.exception.BoardNotFoundException;
 import techit.boardmvc.service.BoardService;
 
 import static techit.boardmvc.config.AppConstants.*;
-import static techit.boardmvc.util.BCryptPasswordSecurity.*;
+
 
 @Controller
 public class BoardController {
@@ -61,15 +61,20 @@ public class BoardController {
     @PostMapping("/write")
     public String write(Board board) {
         board.setCreatedAt(LocalDateTime.now(DEFAULT_ZONE));
-        String hashedPassword = hashingPassword(board.getPassword());
-        board.setPassword(hashedPassword);
+        board.setUpdatedAt(LocalDateTime.now(DEFAULT_ZONE));
+
+        board.setPassword(boardService.hashedBoardByPassword(board.getPassword()));
         boardService.saveByBoard(board);
         return "redirect:/list";
     }
 
     @GetMapping("/updateform")
-    public String updateForm(@RequestParam("id") Long id, @RequestParam("page") int page, Model model) {
-        Board board = boardService.findBoardByID(id).orElse(null);
+    public String updateForm(@RequestParam("id") Long id,
+                             @RequestParam("page") int page,
+                             Model model) {
+
+        Board board = boardService.findBoardByID(id).orElseThrow(() -> new BoardNotFoundException("ID가 " + id + "인 게시판을 찾을 수 없습니다."));
+
         model.addAttribute("board", board);
         model.addAttribute("page", page);
         return "board/updateform";
@@ -80,18 +85,18 @@ public class BoardController {
                          @RequestParam("id") Long id,
                          @RequestParam("page") int page,
                          Model model) {
+
         Board originalBoard = boardService.findBoardByID(id)
                 .orElseThrow(() -> new BoardNotFoundException("ID가 " + id + "인 게시판을 찾을 수 없습니다."));
 
-        if (!verifyPassword(board.getPassword(), originalBoard.getPassword())) {
+        if (!boardService.validatePassword(board.getPassword(), originalBoard.getPassword())) {
             model.addAttribute("errorMessage", true);
             model.addAttribute("page", page);
             model.addAttribute("board", board);
             return "board/updateform";
         }
 
-        String hashedPassword = hashingPassword(board.getPassword());
-        board.setPassword(hashedPassword);
+        board.setPassword(boardService.hashedBoardByPassword(board.getPassword()));
 
         board.setUpdatedAt(LocalDateTime.now(DEFAULT_ZONE));
         boardService.updateByBoard(board);
@@ -111,10 +116,11 @@ public class BoardController {
     public String delete(@RequestParam("id") Long id,
                          @RequestParam("password") String password,
                          @RequestParam("page") int page) {
+
         Board board = boardService.findBoardByID(id)
                 .orElseThrow(() -> new BoardNotFoundException("ID가 " + id + "인 게시판을 찾을 수 없습니다."));
 
-        if (verifyPassword(password, board.getPassword())) {
+        if (boardService.validatePassword(password, board.getPassword())) {
             boardService.deleteByBoard(id);
             return "redirect:/list";
         }
