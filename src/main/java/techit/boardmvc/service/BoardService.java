@@ -45,11 +45,7 @@ public class BoardService {
         return boardRepository.findById(id);
     }
 
-    @Transactional(readOnly = true)
-    public boolean validatePassword(Long id, String password) {
-        Optional<Board> optionalBoard = findBoardByID(id);
-        return optionalBoard.map(board -> board.getPassword().equals(password)).orElse(false);
-    }
+
 
     public String hashedBoardByPassword(String password) {
         String hashedPassword =  hashingPassword(password);
@@ -59,4 +55,10 @@ public class BoardService {
     public boolean validatePassword(String notHashPassword, String hashedPassword) {
         return verifyPassword(notHashPassword, hashedPassword);
     }
+
+    //    @Transactional(readOnly = true)
+//    public boolean validatePassword(Long id, String password) {
+//        Optional<Board> optionalBoard = findBoardByID(id);
+//        return optionalBoard.map(board -> board.getPassword().equals(password)).orElse(false);
+//    }
 }
