@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -53,27 +54,29 @@ public class BoardController {
     }
 
     @GetMapping("/writeform")
-    public String writeForm(Model model) {
+    public String showWriteForm(Model model) {
         model.addAttribute("board", new Board());
         return "board/writeform";
     }
 
     @PostMapping("/write")
-    public String write(Board board) {
-        board.setCreatedAt(LocalDateTime.now(DEFAULT_ZONE));
-        board.setUpdatedAt(LocalDateTime.now(DEFAULT_ZONE));
+    public String writeBoard(@ModelAttribute("board") Board newBoard) {
+        newBoard.setCreatedAt(LocalDateTime.now(DEFAULT_ZONE));
+        newBoard.setUpdatedAt(LocalDateTime.now(DEFAULT_ZONE));
 
-        board.setPassword(boardService.hashedBoardByPassword(board.getPassword()));
-        boardService.saveByBoard(board);
+        newBoard.setPassword(boardService.hashedBoardByPassword(newBoard.getPassword()));
+        boardService.saveByBoard(newBoard);
         return "redirect:/list";
     }
 
     @GetMapping("/updateform")
-    public String updateForm(@RequestParam("id") Long id,
-                             @RequestParam("page") int page,
-                             Model model) {
+    public String showUpdateForm(
+            @RequestParam("id") Long id,
+            @RequestParam("page") int page,
+            Model model) {
 
-        Board board = boardService.findBoardByID(id).orElseThrow(() -> new BoardNotFoundException("ID가 " + id + "인 게시판을 찾을 수 없습니다."));
+        Board board = boardService.findBoardByID(id)
+                .orElseThrow(() -> new BoardNotFoundException("ID가 " + id + "인 게시판을 찾을 수 없습니다."));
 
         model.addAttribute("board", board);
         model.addAttribute("page", page);
@@ -81,10 +84,11 @@ public class BoardController {
     }
 
     @PostMapping("/update")
-    public String update(Board board,
-                         @RequestParam("id") Long id,
-                         @RequestParam("page") int page,
-                         Model model) {
+    public String updateBoard(
+            Board board,
+            @RequestParam("id") Long id,
+            @RequestParam("page") int page,
+            Model model) {
 
         Board originalBoard = boardService.findBoardByID(id)
                 .orElseThrow(() -> new BoardNotFoundException("ID가 " + id + "인 게시판을 찾을 수 없습니다."));
@@ -104,18 +108,21 @@ public class BoardController {
     }
 
     @GetMapping("/deleteform")
-    public String deleteForm(@RequestParam("id") Long id,
-                             @RequestParam("page") int page,
-                             Model model) {
+    public String showDeleteForm(
+            @RequestParam("id") Long id,
+            @RequestParam("page") int page,
+            Model model) {
+
         model.addAttribute("id", id);
         model.addAttribute("page", page);
         return "board/deleteform";
     }
 
     @PostMapping("/delete")
-    public String delete(@RequestParam("id") Long id,
-                         @RequestParam("password") String password,
-                         @RequestParam("page") int page) {
+    public String DeleteBoard(
+            @RequestParam("id") Long id,
+            @RequestParam("password") String password,
+            @RequestParam("page") int page) {
 
         Board board = boardService.findBoardByID(id)
                 .orElseThrow(() -> new BoardNotFoundException("ID가 " + id + "인 게시판을 찾을 수 없습니다."));
